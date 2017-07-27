@@ -1,0 +1,18 @@
+---
+step:
+  url: http://104.239.140.232:5000/
+  device: mitsubishi_CNC
+  filter: //DataItem[@type='EQUIPMENT_TIMER']
+
+#step:
+#  url: http://104.239.140.232:5000/
+#  device: mitsubishi_CNC
+#  filter: //DataItem[@type='ASSET_REMOVED ']
+
+#local:
+#  url: http://localhost:5000/
+#  device: mitsubishi_CNC
+#  filter: //DataItem[@type='MEASUREMENT'or@type='PROGRAM'or@type='ASSET_CHANGED'or@type='EXECUTION']
+
+
+

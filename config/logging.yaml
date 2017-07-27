@@ -1,0 +1,21 @@
+
+test:
+  file: STDOUT
+  level: INFO
+
+production:
+  level: INFO
+  max_size: 2M
+  retain: 10
+
+debug:
+  file: STDOUT
+  level: DEBUG
+
+install:
+  file: STDOUT
+  level: DEBUG
+
+run:
+  file: STDOUT
+  level: INFO
