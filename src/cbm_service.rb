@@ -5,6 +5,7 @@ $: << File.dirname(__FILE__)
 
 require 'rbconfig'
 require 'rubygems'
+#in case gateway is run on a Windows machine
 if RUBY_PLATFORM =~ /mingw32/
   require 'win32/daemon'
   require 'win32/service'
@@ -16,15 +17,15 @@ begin
   $gateway_env = :production
 
   if ARGV.length > 0
-    service_name = "CBM Gateway"
-    service_display_name = "CBM Gateway"
+    service_name = 'CBM Gateway'
+    service_display_name = 'CBM Gateway'
 
     dir = File.expand_path(File.dirname(__FILE__) + "/..")
     ruby = File.join(RbConfig::CONFIG['bindir'], 'rubyw')
     cmd = "#{ruby} -C#{dir} #{File.expand_path(__FILE__)}".tr('/', '\\')
 
     case ARGV[0].downcase
-      when "install"
+      when 'install'
         $gateway_env = :install
         require 'configuration'
         require 'logging'
@@ -45,7 +46,7 @@ begin
         Win32::Service.configure(service_name: service_name,
                                  binary_path_name: cmd)
 
-      when "uninstall"
+      when 'uninstall'
         $gateway_env = :install
         require 'configuration'
         require 'logging'

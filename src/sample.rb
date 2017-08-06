@@ -17,7 +17,7 @@ require 'sqlite_db'
 
 module Sample
   class StreamError < StandardError; end
-
+  #reads document
   def Sample.parse(xml, instance, program)
     doc = REXML::Document.new(xml)
 
@@ -31,10 +31,11 @@ module Sample
       end
     end
     nxt = nil
+    #reads header
     count = 0
     header = doc.elements['//Header']
     nxt = header.attributes['nextSequence']
-
+    #reads and logs new data
     doc.each_element('//Streams/DeviceStream') do |stream|
       begin
         deviceUUID = stream.attributes['uuid']
@@ -44,7 +45,8 @@ module Sample
         end
         Logging.logger.debug "Got device stream for device with UUID #{deviceUUID}, name #{deviceName}"
         count = 0
-        stream.each_element('//ComponentStream/Events/EquipmentTimer') do |ele|
+        stream.each_element('//ComponentStream/Events/EquipmentTimerDiscrete') do |ele|
+          #parses and logs info for each device
           val = ele.text
           timestamp = ele.attributes['timestamp']
           eventName = ele.attributes['name']
@@ -52,7 +54,6 @@ module Sample
             when 'powered_time','operating_time','working_time'
               if val == 'UNAVAILABLE'
                 Logging.logger.info "Attempted to log #{eventName} interval for device #{deviceName}: information unavailable."
-                SQLite_CBM_DB.insert_data(deviceUUID,timestamp,eventName, Random.new.rand * 100.0)
               else
                 Logging.logger.info "Logged #{eventName} interval for device #{deviceName}."
                 SQLite_CBM_DB.insert_data(deviceUUID,timestamp,eventName,val.to_f)

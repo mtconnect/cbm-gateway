@@ -2,12 +2,12 @@
 step:
   url: http://104.239.140.232:5000/
   device: mitsubishi_CNC
-  filter: //DataItem[@type='EQUIPMENT_TIMER']
+  filter: //DataItem[@type='EQUIPMENT_TIMER'] #filters out unnecessary data from the input
 
 #step:
 #  url: http://104.239.140.232:5000/
 #  device: mitsubishi_CNC
-#  filter: //DataItem[@type='ASSET_REMOVED ']
+#  filter: //DataItem[@type='ASSET_REMOVED']
 
 #local:
 #  url: http://localhost:5000/

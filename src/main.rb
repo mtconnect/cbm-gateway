@@ -16,6 +16,7 @@ require 'configuration'
 require 'collector'
 require 'cbm_gateway'
 
+# starts all necessary threads
 module Main
   def Main.start
     require 'logger'
@@ -39,7 +40,7 @@ module Main
       end
     end
 
-    Logging.logger.info "Starting Adapter thread"
+    Logging.logger.info 'Starting adapter thread'
 
     @threads << Thread.new do
       adapter = CBMGateway::CBMAdapter.new

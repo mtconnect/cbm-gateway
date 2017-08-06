@@ -19,12 +19,12 @@ require 'data_item'
 
 $logger = Logger.new(STDOUT)
 $logger.level= Logger::DEBUG
-
+#connects CBM Gateway to MTConnect Agent
 module MTConnect
   class Adapter
     attr_reader :data_items
 
-    def initialize(port = 7878, heartbeat_interval = 1000)
+    def initialize(port = 7979, heartbeat_interval = 1000)
       @port = port
       @heartbeat_interval = heartbeat_interval
       @running = false
