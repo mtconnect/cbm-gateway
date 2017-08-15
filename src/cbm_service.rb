@@ -30,7 +30,7 @@ begin
         require 'configuration'
         require 'logging'
         puts "Installing command: #{cmd}"
-
+        #code for Windows devices
         Win32::Service.new(service_name: service_name,
                            display_name: service_display_name,
                            description: service_display_name,

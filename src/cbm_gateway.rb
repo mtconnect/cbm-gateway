@@ -49,12 +49,11 @@ module CBMGateway
           @nameStorage.each do |name|
             #calculute change in RUL and use model to update other statistics
             rulDelta, @timeChecked[name] = SQLite_CBM_DB.calculateRULDelta(name,@timeChecked[name])
-            puts rulDelta
             @life[name] -= rulDelta
             @spindleCap[name] **= (1-rulDelta/(@life[name]**1.5))
             @posCap[name] **= (1-rulDelta/(@life[name]**1.5))
 
-            #update adapter data items
+            #update adapter data items (spindle cap and pos cap are rounded)
             @remaining_useful_life[name].value = @life[name]
             @remaining_useful_delta[name].value = rulDelta
             @position_capability[name].value = @posCap[name]

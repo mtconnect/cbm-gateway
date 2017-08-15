@@ -2,6 +2,7 @@ require 'sqlite3'
 module SQLite_CBM_DB
 
   def SQLite_CBM_DB.init_db
+    #makes new database and tables
     dir = File.expand_path(File.dirname(__FILE__) + '/../db')
     $database = SQLite3::Database.new dir + '/cbm-storage.db'
     $table = $database.execute 'CREATE TABLE IF NOT EXISTS deviceInfo(name TEXT, timestamp TEXT, eventCategory TEXT, eventVal FLOAT)'
@@ -11,7 +12,7 @@ module SQLite_CBM_DB
   end
 
   def SQLite_CBM_DB.insert_data(name, timestamp, category, value)
-#   Initializes database and tables if they doesn't yet exist.
+#   Initializes database and tables if they do not yet exist.
     if $database.nil?
       SQLite_CBM_DB.init_db
     end

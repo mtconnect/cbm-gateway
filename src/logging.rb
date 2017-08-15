@@ -15,6 +15,7 @@
 require 'logger'
 require 'yaml'
 require 'core_ext'
+require 'configuration'
 
 module Logging
   SIZE_SUFFIX = { 'M' => 1024 * 1024, 'K' => 1024, 'B' => 1 }

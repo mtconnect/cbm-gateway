@@ -12,6 +12,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+#this class is used to store data in the adapter
 module MTConnect
   class DataItem
     attr_reader :name, :value
