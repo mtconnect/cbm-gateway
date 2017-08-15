@@ -1,6 +1,6 @@
 require 'adapter'
 require 'configuration'
-require 'sqlite_db.rb'
+require 'sqlite_db'
 
 module CBMGateway
   class CBMAdapter
@@ -8,47 +8,70 @@ module CBMGateway
       @adapter = MTConnect::Adapter.new(port)
       @connected = false
       # Create and add the data items
-      @adapter.data_items << (@remaining_useful_life = MTConnect::Event.new('rulr'))
-      @adapter.data_items << (@position_capability = MTConnect::Event.new('cap_position'))
-      @adapter.data_items << (@spindle_capability = MTConnect::Event.new('cap_rv'))
+      @remaining_useful_life = Hash.new()
+      @position_capability = Hash.new()
+      @spindle_capability = Hash.new()
+      @remaining_useful_delta = Hash.new()
+      @nameStorage = []
+      @life = Hash.new()
+      @spindleCap = Hash.new()
+      @posCap = Hash.new()
+      @timeChecked = Hash.new()
+
+      @conf = YAML.load_file("#{$config_dir}device_data.yaml")
+      @conf.each do |ele|
+        #stores values for each device in appropriate hashes, raises error if info is missing
+        deviceName = ele[0]
+        if(ele[1]['startSpindleCap'].nil? or ele[1]['startRUL'].nil? or ele[1]['startSpindleCap'].nil? or ele[1]['startTime'].nil?)
+          raise "Error parsing YAML: Required device information for device #{deviceName} not found"
+        end
+        @nameStorage << deviceName
+        @spindleCap[deviceName] = ele[1]['startSpindleCap'].to_f
+        @life[deviceName] = ele[1]['startRUL'].to_f
+        @posCap[deviceName] = ele[1]['startPosCap'].to_f
+        @timeChecked[deviceName] = ele[1]['startTime'].to_s
+
+        #add data items to adapter
+        @adapter.data_items << (@remaining_useful_life[deviceName] = MTConnect::Event.new("#{deviceName}:rulr"))
+        @adapter.data_items << (@remaining_useful_delta[deviceName] = MTConnect::Event.new("#{deviceName}:ruld"))
+        @adapter.data_items << (@position_capability[deviceName] = MTConnect::Event.new("#{deviceName}:cap_position"))
+        @adapter.data_items << (@spindle_capability[deviceName] = MTConnect::Event.new("#{deviceName}:cap_rv"))
+      end
+
     end
 
     def connect
       @adapter.start
-      uuidStorage = []
-      life = Hash.new()
-      spindleCap = Hash.new()
-      posCap = Hash.new()
-      timeChecked = Hash.new()
 
-      conf = YAML.load_file("#{$config_dir}deviceRUL.yaml")
-      conf.each do |ele|
-        #stores values for each device in appropriate hashes, raises error if info is missing
-        deviceUUID = ele[0]
-        if(ele[1]['startSpindleCap'].nil? or ele[1]['startRUL'].nil? or ele[1]['startSpindleCap'].nil? or ele[1]['startTime'].nil?)
-          raise "Error parsing YAML: Required device information for device #{deviceUUID} not found"
-        end
-        uuidStorage << deviceUUID
-        spindleCap[deviceUUID] = ele[1]['startSpindleCap'].to_f
-        life[deviceUUID] = ele[1]['startRUL'].to_f
-        posCap[deviceUUID] = ele[1]['startPosCap'].to_f
-        timeChecked[deviceUUID] = ele[1]['startTime'].to_s
-      end
 
       while true
         @adapter.gather do
-          uuidStorage.each do |uuid|
-            rulDelta, timeChecked[uuid] = SQLite_CBM_DB.calculateRULDelta(uuid,timeChecked[uuid])
-            life[uuid] -= rulDelta
-            spindleCap[uuid] **(1-rulDelta/life[uuid])
-            posCap[uuid] ** (1-rulDelta/(life[uuid]**2))
-            @remaining_useful_life.value = life[uuid]
-            @position_capability.value = posCap[uuid]
-            @spindle_capability.value = spindleCap[uuid]
+          @nameStorage.each do |name|
+            #calculute change in RUL and use model to update other statistics
+            rulDelta, @timeChecked[name] = SQLite_CBM_DB.calculateRULDelta(name,@timeChecked[name])
+            puts rulDelta
+            @life[name] -= rulDelta
+            @spindleCap[name] **= (1-rulDelta/(@life[name]**1.5))
+            @posCap[name] **= (1-rulDelta/(@life[name]**1.5))
+
+            #update adapter data items
+            @remaining_useful_life[name].value = @life[name]
+            @remaining_useful_delta[name].value = rulDelta
+            @position_capability[name].value = @posCap[name]
+            @spindle_capability[name].value = @spindleCap[name]
+
+            #update yaml file
+            @conf[name]['startRUL'] = @life[name]
+            @conf[name]['startPosCap'] = @posCap[name]
+            @conf[name]['startSpindleCap'] = @spindleCap[name]
+            @conf[name]['startTime'] = @timeChecked[name]
+
+            File.open("#{$config_dir}device_data.yaml",'w') do |h|
+              h.write @conf.to_yaml
+            end
           end
-          sleep 2
         end
-        sleep 8
+        sleep 10
       end
     end
   end

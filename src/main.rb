@@ -53,8 +53,9 @@ module Main
   def Main.stop
     $running = false
     Collector.signal_queue
-    DBReader.instance.stop
-    @threads.each { |t| t.join(2) }
+    @threads.each {|t| t.join(2)}
+    $database.close
+
   end
 end
 

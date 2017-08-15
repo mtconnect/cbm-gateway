@@ -1,18 +1,10 @@
 ---
-step:
+itamco_Haas:
   url: http://104.239.140.232:5000/
-  device: mitsubishi_CNC
+  device: itamco_Haas
   filter: //DataItem[@type='EQUIPMENT_TIMER'] #filters out unnecessary data from the input
 
-#step:
-#  url: http://104.239.140.232:5000/
-#  device: mitsubishi_CNC
-#  filter: //DataItem[@type='ASSET_REMOVED']
-
-#local:
-#  url: http://localhost:5000/
-#  device: mitsubishi_CNC
-#  filter: //DataItem[@type='MEASUREMENT'or@type='PROGRAM'or@type='ASSET_CHANGED'or@type='EXECUTION']
-
-
-
+itamco_DMG:
+  url: http://104.239.140.232:5000/
+  device: itamco_DMG
+  filter: //DataItem[@type='EQUIPMENT_TIMER']

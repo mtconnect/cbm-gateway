@@ -38,14 +38,13 @@ module Sample
     #reads and logs new data
     doc.each_element('//Streams/DeviceStream') do |stream|
       begin
-        deviceUUID = stream.attributes['uuid']
         deviceName = stream.attributes['name']
-        if deviceUUID == nil or deviceName == nil
+        if deviceName == nil
           return 0, program
         end
-        Logging.logger.debug "Got device stream for device with UUID #{deviceUUID}, name #{deviceName}"
+        Logging.logger.debug "Got device stream for device #{deviceName}"
         count = 0
-        stream.each_element('//ComponentStream/Events/EquipmentTimerDiscrete') do |ele|
+        stream.each_element('//ComponentStream/Events/EquipmentTimer') do |ele|
           #parses and logs info for each device
           val = ele.text
           timestamp = ele.attributes['timestamp']
@@ -56,7 +55,7 @@ module Sample
                 Logging.logger.info "Attempted to log #{eventName} interval for device #{deviceName}: information unavailable."
               else
                 Logging.logger.info "Logged #{eventName} interval for device #{deviceName}."
-                SQLite_CBM_DB.insert_data(deviceUUID,timestamp,eventName,val.to_f)
+                SQLite_CBM_DB.insert_data(deviceName,timestamp,eventName,val.to_f)
               end
             else
               Logging.logger.error "Got incompatible event with type #{eventName}: skipping event."
