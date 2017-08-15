@@ -15,9 +15,6 @@ module SQLite_CBM_DB
     if $database.nil?
       SQLite_CBM_DB.init_db
     end
-    if value == 0
-      value = rand*10
-    end
     $database.execute('INSERT INTO deviceInfo VALUES(?,?,?,?)',[name,timestamp,category,value])
   rescue
     Logging.logger.error "Error parsing device stream: #{$!}#{$!.class.name}"
@@ -32,6 +29,7 @@ module SQLite_CBM_DB
     total = 0.0
     rows.each do |row|
       # each type of event affects the working RUL differently
+      # accounts for the fact that powered state will be recorded while working or operating
       case row['eventCategory']
         when 'powered_time'
           total += row['eventVal'] * 0.001
