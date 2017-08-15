@@ -1,7 +1,0 @@
-#Declare each machine's initial state before logging begins. All fields are necessary for each device.
-mitsubishi_CNC_5b1b61: #The device's UUID
-  startTime: 2017-07-28T00:00:00.000000Z #Gateway will log all events after this timestamp.
-  startRUL: 300000
-  startSpindleCap: 25000
-  startPosCap: 125
-
