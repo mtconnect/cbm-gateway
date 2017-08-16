@@ -56,8 +56,8 @@ module CBMGateway
             #update adapter data items (spindle cap and pos cap are rounded)
             @remaining_useful_life[name].value = @life[name]
             @remaining_useful_delta[name].value = rulDelta
-            @position_capability[name].value = @posCap[name]
-            @spindle_capability[name].value = @spindleCap[name]
+            @position_capability[name].value = @posCap[name].round
+            @spindle_capability[name].value = (@spindleCap[name]).round(-2)
 
             #update yaml file
             @conf[name]['startRUL'] = @life[name]
