@@ -1,3 +1,17 @@
+# Copyright 2017, System Insights, Inc.
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
 require 'adapter'
 require 'configuration'
 require 'sqlite_db'
@@ -25,6 +39,7 @@ module CBMGateway
         if(ele[1]['startSpindleCap'].nil? or ele[1]['startRUL'].nil? or ele[1]['startSpindleCap'].nil? or ele[1]['startTime'].nil?)
           raise "Error parsing YAML: Required device information for device #{deviceName} not found"
         end
+        #reads data from YAML file
         @nameStorage << deviceName
         @spindleCap[deviceName] = ele[1]['startSpindleCap'].to_f
         @life[deviceName] = ele[1]['startRUL'].to_f
@@ -53,7 +68,7 @@ module CBMGateway
             @spindleCap[name] **= (1-rulDelta/(@life[name]**1.5))
             @posCap[name] **= (1-rulDelta/(@life[name]**1.5))
 
-            #update adapter data items (spindle cap and pos cap are rounded)
+            #update adapter data items (spindle cap and pos cap are rounded for practicality)
             @remaining_useful_life[name].value = @life[name]
             @remaining_useful_delta[name].value = rulDelta
             @position_capability[name].value = @posCap[name].round

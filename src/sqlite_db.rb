@@ -1,3 +1,17 @@
+# Copyright 2017, System Insights, Inc.
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
 require 'sqlite3'
 module SQLite_CBM_DB
 
@@ -12,14 +26,13 @@ module SQLite_CBM_DB
   end
 
   def SQLite_CBM_DB.insert_data(name, timestamp, category, value)
-#   Initializes database and tables if they do not yet exist.
     if $database.nil?
       SQLite_CBM_DB.init_db
     end
+#insert data
     $database.execute('INSERT INTO deviceInfo VALUES(?,?,?,?)',[name,timestamp,category,value])
   rescue
-    Logging.logger.error "Error parsing device stream: #{$!}#{$!.class.name}"
-    Logging.logger.debug $!.backtrace.join("\n")
+    Logging.logger.warn "Error inserting data: #{$!}"
   end
 
   def SQLite_CBM_DB.calculateRULDelta(name, time)

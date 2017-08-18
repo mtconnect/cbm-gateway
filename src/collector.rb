@@ -1,5 +1,4 @@
-# coding: utf-8
-# Copyright 2014, System Insights, Inc.
+# Copyright 2017, System Insights, Inc.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -229,17 +228,19 @@ class Collector
       count = 0
       start = Time.now
       last = @next
-      logger.debug "#{@name} (#{@url}) Instance #{@instance} #{@next} #{@program.inspect}"
+      logger.debug "Device: #{@name} (#{@url}) Sequence: #{@next} Instance: #{@instance}"
       nxt, count, @program = Sample.parse(xml, @instance, @program)
       @program = 'unknown' unless @program
       if @next.nil? or nxt > @next
         @next = nxt
         dt = Time.now - start
         dt = 0.00000001 if dt == 0.0
-        logger.info "#{@name} (#{@url}) Time to parse: #{dt} (processed #{count} at #{(count/dt).to_i} events/second) - QL: #{@@queue.length}"
+        logger.info "Device: #{@name} (#{@url}) Time to parse: #{dt} (processed #{count} at #{(count/dt).to_i} events/second) - QL: #{@@queue.length}"
         write_recovery
       else
-        logger.info "#{@name} (#{@url}) Recovering previous document at #{nxt} currently at #{@next}"
+        if nxt < @next
+          logger.info "#{@name} (#{@url}) Recovering previous document at {nxt}# currently at #{@next}"
+        end
       end
     true
     end

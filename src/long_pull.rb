@@ -1,4 +1,4 @@
-# Copyright 2014, System Insights, Inc.
+# Copyright 2017, System Insights, Inc.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ class LongPull
   def initialize(http)
     @http = http
   end
-
+#parses XML document
   def long_pull(uri)
     @http.request_get(uri) do |res|
       content_type, = res.get_fields('content-type')
