@@ -54,8 +54,8 @@ module Sample
               if val == 'UNAVAILABLE'
                 Logging.logger.info "Attempted to log #{eventName} interval for device #{deviceName}: information unavailable."
               else
-                Logging.logger.info "Logged #{eventName} interval for device #{deviceName}."
-                SQLite_CBM_DB.insert_data(deviceName,timestamp,eventName,val.to_f)
+                Logging.logger.info "Logged #{eventName} interval with value #{val} for device #{deviceName}."
+                SQLite_CBM_DB.insert_data(deviceName,timestamp,eventName,val)
               end
             else
               Logging.logger.error "Got incompatible event with type #{eventName}: skipping event."
@@ -64,8 +64,7 @@ module Sample
           count += 1
         end
       rescue
-        Logging.logger.error "Error parsing device stream: #{$!}#{$!.class.name}"
-        Logging.logger.debug $!.backtrace.join("\n")
+        Logging.logger.error "Error parsing device stream: #{$!}"
       end
     end
     Logging.logger.error 'Could not find next sequence id' unless nxt
