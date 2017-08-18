@@ -17,5 +17,5 @@ install:
   level: DEBUG
 
 run:
-  file: STDOUT
+  file: cbm_gateway.log
   level: INFO

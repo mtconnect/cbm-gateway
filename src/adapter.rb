@@ -14,11 +14,10 @@
 
 require 'socket'
 require 'thread'
-require 'logger'
 require 'data_item'
+require 'logger'
 
-$logger = Logger.new(STDOUT)
-$logger.level= Logger::DEBUG
+
 #connects CBM Gateway to MTConnect Agent
 module MTConnect
   class Adapter
@@ -34,6 +33,10 @@ module MTConnect
       @data_items = []
       @started = ConditionVariable.new
       @heartbeat = @acceptor = nil
+
+      require 'logging'
+      $logger = Logging.logger
+
     end
 
     def start
@@ -194,7 +197,7 @@ module MTConnect
 
     def send(time, text, clients)
       line =  format_line(time, text)
-      $logger.debug('send') { line }
+      $logger.info('send') { line }
       clients.reverse_each do |sock|
         send_to_client(sock, line)
       end

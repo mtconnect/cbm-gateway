@@ -51,6 +51,22 @@ Install CBM Gateway
 
   * Run bin/start_gateway.sh
   
+Information
+--------
+There are 3 configuration files inside the config directory:
+
+* agents.yaml: sets up where information is to be found for each device
+* device_data.yaml: sets up initial data values for each device,
+and stores data values for each device while gateway is not running
+* logging.yaml: sets gateway environment
+
+Logging files can be found in the log directory. There are 2 log files:
+
+* config.log records file-reading activity
+* cbm_gateway.log records activity when the gateway is running
+
+There will also be recovery files for each device.
+
 Troubleshooting
 -------
 
