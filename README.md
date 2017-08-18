@@ -35,18 +35,25 @@ Install CBM Gateway
    
           bundle install
           
-  
 3. Configure the gateway
 
+
   * Open config/device_data.yaml in any text editor
-    * Edit device name and values to provide starting values for the 
+    * Edit device name and values to provide starting values for each device
   * Open config/agents.yaml in any text editor
     * Add one line per device you want to collect information from
   * Open bin/start_gateway.sh in any text editor
     * Edit the paths to correspond to the location of the cbm-gateway on your machine
+    
+4. The CBM Gateway will listen on port 7979. Update the MTConnect Agent config files.
+  * Put the following under the adapter section:
 
-4. Make sure that the agent is configured to listen on port 7979
-
+          cbm {
+              Device = <insert device name>
+              Host = <insert CBM Gateway host name>
+              Port = 7979
+            }
+          
 5. Start the gateway
 
   * Run bin/start_gateway.sh
@@ -56,16 +63,17 @@ Information
 There are 3 configuration files inside the config directory:
 
 * agents.yaml: sets up where information is to be found for each device
-* device_data.yaml: sets up initial data values for each device,
-and stores data values for each device while gateway is not running
-* logging.yaml: sets gateway environment
+* device_data.yaml: sets up initial data values for each device. This YAML file will be updated while the gateway
+is running, so that the gateway retains the last calculated statistics.
+* logging.yaml: sets log outputs and logging levels
 
 Logging files can be found in the log directory. There are 2 log files:
 
-* config.log records file-reading activity
+* config.log records configuration values
 * cbm_gateway.log records activity when the gateway is running
 
-There will also be recovery files for each device.
+There will also be recovery files for each device. This stores the instance # and the sequence # of last EQUIPMENT_TIMER request for the device.
+* Recover_\<device name\>_\<url\>.dat
 
 Troubleshooting
 -------
@@ -73,7 +81,7 @@ Troubleshooting
 Potential issues:
 1. The recovery files store the time instance when the program exits. If the agent is no longer storing
 data from that time instance, it will display an MTConnect error and disconnect for 10 seconds. This is resolved
-by waiting out the 10 seconds, after which the program will reconnect and the recovery files will be updated.
+by waiting out the 10 seconds, after which the program will reconnect from the latest sequence # and the recovery files will be updated.
 
 2. If the machine running the MTConnect agent is unavailable, a connection error will occur.
 
