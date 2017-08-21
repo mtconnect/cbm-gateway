@@ -49,8 +49,8 @@ module CBMGateway
         #add data items to adapter
         @adapter.data_items << (@remaining_useful_life[deviceName] = MTConnect::Event.new("#{deviceName}:rulr"))
         @adapter.data_items << (@remaining_useful_delta[deviceName] = MTConnect::Event.new("#{deviceName}:ruld"))
-        @adapter.data_items << (@position_capability[deviceName] = MTConnect::Event.new("#{deviceName}:cap_position"))
-        @adapter.data_items << (@spindle_capability[deviceName] = MTConnect::Event.new("#{deviceName}:cap_rv"))
+        @adapter.data_items << (@position_capability[deviceName] = MTConnect::Event.new("#{deviceName}:p1_cap_position"))
+        @adapter.data_items << (@spindle_capability[deviceName] = MTConnect::Event.new("#{deviceName}:C1_cap_rv"))
       end
 
     end
