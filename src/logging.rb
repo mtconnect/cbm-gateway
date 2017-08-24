@@ -27,6 +27,8 @@ module Logging
 
   def Logging.logger
     unless @logger
+      puts "Configuration directory: #{$config_dir}"
+      
       doc = YAML.load_file("#{$config_dir}logging.yaml").deep_symbolize_keys
       config = doc[$gateway_env || :production]
       if config
@@ -39,6 +41,7 @@ module Logging
 
         retain = config[:retain] || 5
         @directory = config[:directory] || "#{File.dirname(__FILE__)}/../log/"
+        puts "Logging directory: #{@directory}"
 
         level = (config[:level] && Logger.const_get(config[:level].to_sym)) || Logger::INFO
         puts "Logging file: #{config.inspect}" 

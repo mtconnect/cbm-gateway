@@ -12,7 +12,12 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+$: << '.'
+$: << File.dirname(__FILE__)
+
+require 'yaml'
 require 'configuration'
+require 'adapter'
 require 'collector'
 require 'cbm_gateway'
 
@@ -20,7 +25,6 @@ require 'cbm_gateway'
 module Main
   def Main.start
     require 'logger'
-    require 'yaml'
     dir = File.expand_path(File.expand_path(File.dirname(__FILE__) + "/../"))
     log = Logger.new("#{dir}/log/config.log")
     Dir.glob("#{dir}/config/*.yaml") do |f|

@@ -13,10 +13,9 @@
 #    limitations under the License.
 
 $: << '.'
-require 'adapter'
-
 $: << File.dirname(__FILE__)
 
+require 'adapter'
 require 'rbconfig'
 require 'rubygems'
 #in case gateway is run on a Windows machine
