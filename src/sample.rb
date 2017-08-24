@@ -44,7 +44,7 @@ module Sample
         end
         Logging.logger.debug "Got device stream for device #{deviceName}"
         count = 0
-        stream.each_element('//ComponentStream/Events/EquipmentTimer') do |ele|
+        stream.each_element('//ComponentStream/Events/EquipmentTimerDiscrete') do |ele|
           #parses and logs info for each device
           val = ele.text
           timestamp = ele.attributes['timestamp']
