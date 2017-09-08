@@ -17,7 +17,9 @@ require 'configuration'
 require 'sqlite_db'
 
 module CBMGateway
+
   class CBMAdapter
+    include Logging
     def initialize(port = 7979)
       @adapter = MTConnect::Adapter.new(port)
       @connected = false
@@ -32,19 +34,27 @@ module CBMGateway
       @posCap = Hash.new()
       @timeChecked = Hash.new()
 
+      
+
       @conf = YAML.load_file("#{$config_dir}device_data.yaml")
-      @conf.each do |ele|
+      @conf.each do |device, config|
         #stores values for each device in appropriate hashes, raises error if info is missing
-        deviceName = ele[0]
-        if(ele[1]['startSpindleCap'].nil? or ele[1]['startRUL'].nil? or ele[1]['startSpindleCap'].nil? or ele[1]['startTime'].nil?)
-          raise "Error parsing YAML: Required device information for device #{deviceName} not found"
+	logger.info "#{device} : #{config.inspect}"
+
+
+        deviceName = device
+	config['startTime'] = Time.now unless config['startTime']
+        if(config['startSpindleCap'].nil? or config['startRUL'].nil? or config['startSpindleCap'].nil? or config['startTime'].nil?)
+          raise "Error parsing YAML: Required device information for device #{deviceName} not found: #{config.inspect}"
         end
         #reads data from YAML file
         @nameStorage << deviceName
-        @spindleCap[deviceName] = ele[1]['startSpindleCap'].to_f
-        @life[deviceName] = ele[1]['startRUL'].to_f
-        @posCap[deviceName] = ele[1]['startPosCap'].to_f
-        @timeChecked[deviceName] = ele[1]['startTime'].to_s
+        @spindleCap[deviceName] = config['startSpindleCap'].to_f
+        @life[deviceName] = config['startRUL'].to_f
+        @posCap[deviceName] = config['startPosCap'].to_f
+        @timeChecked[deviceName] = config['startTime'].to_s
+
+	logger.info "#{deviceName}: #{@timeChecked.inspect} #{@life.inspect}"
 
         #add data items to adapter
         @adapter.data_items << (@remaining_useful_life[deviceName] = MTConnect::Event.new("#{deviceName}:rulr"))
@@ -53,6 +63,9 @@ module CBMGateway
         @adapter.data_items << (@spindle_capability[deviceName] = MTConnect::Event.new("#{deviceName}:C1_cap_rv"))
       end
 
+    rescue
+      logger.error $!
+      logger.error $!.backtrace.join("\n")
     end
 
     def connect

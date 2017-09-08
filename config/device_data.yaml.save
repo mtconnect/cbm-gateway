@@ -1,0 +1,9 @@
+---
+itamco_Haas:
+  startRUL: 432000
+  startSpindleCap: 1400
+  startPosCap: 500
+itamco_DMG:
+  startRUL: 432000
+  startSpindleCap: 4000
+  startPosCap: 4000

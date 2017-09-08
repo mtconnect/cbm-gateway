@@ -1,11 +1,11 @@
 ---
 itamco_Haas:
-  startTime: 2017-08-15T06:10Z
-  startRUL: 100.0
-  startSpindleCap: 1400.0
-  startPosCap: 800.0
+  startRUL: 431245.53119999997
+  startSpindleCap: 1399.972987262403
+  startPosCap: 499.991723764707
+  startTime: 2017-09-08T21:23Z
 itamco_DMG:
-  startTime: 2017-08-15T06:10Z
-  startRUL: 100.0
+  startRUL: 432000.0
   startSpindleCap: 4000.0
-  startPosCap: 1000.0
+  startPosCap: 4000.0
+  startTime: 2017-09-08T21:22Z
