@@ -1,10 +1,10 @@
 ---
 itamco_Haas:
-  url: http://104.239.140.232:5000/
+  url: http://127.0.0.1:5000/
   device: itamco_Haas
   filter: //DataItem[@type='EQUIPMENT_TIMER'] #filters out unnecessary data from the input
 
 itamco_DMG:
-  url: http://104.239.140.232:5000/
+  url: http://127.0.0.1:5000/
   device: itamco_DMG
   filter: //DataItem[@type='EQUIPMENT_TIMER']
